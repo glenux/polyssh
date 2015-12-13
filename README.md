@@ -39,6 +39,11 @@ Type the following command using polyssh :
     $ polyssh alice@firewall:7222 -verbose Cypherbob@router charlie@destination
 
 
+## Credits
+
+* Initial idea : [Bob Muller on Stack Overflow](http://superuser.com/a/377215)
+* Ruby rewrite & packaging : Glenn Y. Rolland
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/glenux/polyssh.
