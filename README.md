@@ -1,29 +1,34 @@
 PolySSH
 =======
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/polyssh`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A multi-hop SSH connection tool.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'polyssh'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Simply type :
 
     $ gem install polyssh
 
 ## Usage
 
-TODO: Write usage instructions here
+    $ polyssh [..list of intermediate hosts...] user@host:port
+
+You can use as many intermediate hosts as you need.
+
+Example: Connecting to ``destination`` machine via the ``firewall`` (on non-default port 7222)
+
+                                 ||
+                                 ||
+    +--------------+      +--------------+      +--------------+
+    | POLYSSH USER |----->|   FIREWALL   |------| DESTINATION  |
+    +--------------+      +--------------+      +--------------+
+                                 ||
+                                 ||
+
+Type the following command using polyssh :
+
+    $ polyssh foo@firewall:7222 bar@destination
+
 
 ## Development
 
