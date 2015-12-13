@@ -10,10 +10,10 @@ module PolySSH
 		attr_reader :prev
 		attr_accessor :args
 
-		def initialize user, host, port=22
-			@user = user
-			@host = host
-			@port = port
+		def initialize
+			@user = nil
+			@host = nil
+			@port = nil
 			@args = []
 			@next = nil
 			@prev = nil
@@ -27,25 +27,24 @@ module PolySSH
 		def to_s
 			if @prev.nil? then # first
 				if @next.nil? then
-					%W{
-	  ssh #{@user}#{@host} 
-	  -p #{@port} 
-	  -o UserKnownHostsFile=/dev/null 
-	  -o StrictHostKeyChecking=no
-					}
+					[
+					  "ssh #{@user}#{@host}",
+			      "-p #{@port}",
+			      "-o UserKnownHostsFile=/dev/null",
+			      "-o StrictHostKeyChecking=no"
+			    ]
 				else
-					%W{
-	  ssh #{@user}#{@host} 
-	  -p #{@port} 
-	  -o UserKnownHostsFile=/dev/null 
-	  -o StrictHostKeyChecking=no 
-	  -L #{@tunnel_port}:#{host}:#{port}
-	  }
-				else
-
-					result << "#{ssh_cmd} -f sleep 10 #{ssh_args}"
-				else
+					[
+					  "ssh #{@user}#{@host}",
+			      "-p #{@port}",
+			      "-o UserKnownHostsFile=/dev/null",
+			      "-o StrictHostKeyChecking=no",
+	          "-L #{@tunnel_port}:#{host}:#{port}"
+			    ]
+					#result << "#{ssh_cmd} -f sleep 10 #{ssh_args}"
 				end
 			end
-		end
-	end
+		end #def
+	end #class
+end #module
+
