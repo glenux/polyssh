@@ -17,38 +17,26 @@ You can use as many intermediate hosts as you need.
 
 ### Example 1 : Traversing a single machine
 
-We wan to connect
+We want to connect
 
-* to a remote host called ``destination`` (as user ``charlie``, on default port)
+* to a remote host called ``destination`` (as user ``bob``, on default port)
 * via a firewall (as user ``alice``, on non-default port 7222)
-
-                                 ||
-                                 ||
-    +--------------+      +--------------+      +--------------+
-    | POLYSSH USER |----->|   FIREWALL   |----->| DESTINATION  |
-    +--------------+      +--------------+      +--------------+
-                                 ||
-                                 ||
 
 The corresponding command using polyssh is :
 
-    $ polyssh alice@firewall:7222 charlie@destination
+    $ polyssh alice@firewall:7222 bob@destination
 
-## Example 2
+## Example 2 : traversing two machines with options
 
-via the ``firewall`` and ``router`` :
+We want to connect
 
-                                 ||
-                                 ||
-    +--------------+      +--------------+      +--------------+      +--------------+
-    | POLYSSH USER |----->|   FIREWALL   |------|    ROUTER    |------| DESTINATION  |
-    +--------------+      +--------------+      +--------------+      +--------------+
-                                 ||
-                                 ||
+* to a remote host called ``destination`` (as user ``charlie``, on default port)
+* via a firewall (as user ``alice``, on non-default port 7222)
+* then via a router  (as user ``bob``, on default), with parameters (FIXME)
 
 Type the following command using polyssh :
 
-    $ polyssh alice@firewall:7222 bob@router charlie@destination
+    $ polyssh alice@firewall:7222 -verbose Cypherbob@router charlie@destination
 
 
 ## Contributing
