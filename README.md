@@ -11,23 +11,44 @@ Simply type :
 
 ## Usage
 
-    $ polyssh [..list of intermediate hosts...] user@host:port
+    $ polyssh [..list of ssh options and intermediate hosts...] user@host:port
 
 You can use as many intermediate hosts as you need.
 
-Example: Connecting to ``destination`` machine via the ``firewall`` (on non-default port 7222)
+### Example 1 : Traversing a single machine
+
+We wan to connect
+
+* to a remote host called ``destination`` (as user ``charlie``, on default port)
+* via a firewall (as user ``alice``, on non-default port 7222)
 
                                  ||
                                  ||
     +--------------+      +--------------+      +--------------+
-    | POLYSSH USER |----->|   FIREWALL   |------| DESTINATION  |
+    | POLYSSH USER |----->|   FIREWALL   |----->| DESTINATION  |
     +--------------+      +--------------+      +--------------+
+                                 ||
+                                 ||
+
+The corresponding command using polyssh is :
+
+    $ polyssh alice@firewall:7222 charlie@destination
+
+## Example 2
+
+via the ``firewall`` and ``router`` :
+
+                                 ||
+                                 ||
+    +--------------+      +--------------+      +--------------+      +--------------+
+    | POLYSSH USER |----->|   FIREWALL   |------|    ROUTER    |------| DESTINATION  |
+    +--------------+      +--------------+      +--------------+      +--------------+
                                  ||
                                  ||
 
 Type the following command using polyssh :
 
-    $ polyssh foo@firewall:7222 bar@destination
+    $ polyssh alice@firewall:7222 bob@router charlie@destination
 
 
 ## Contributing
