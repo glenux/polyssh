@@ -2,8 +2,10 @@
 # vim: set ts=2 sw=2 et:
 
 require 'polyssh'
+require 'pp'
 
 app = PolySSH::Cli.new
-commands = app.build_commands ARGV
-app.exec commands
+chain = app.build_commands ARGV
+pp chain
+#app.run commands
 

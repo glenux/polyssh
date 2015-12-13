@@ -2,29 +2,28 @@
 module PolySSH
   class Cli
     def build_commands args
-      node_chain = Node.new
-      node_current = node_chain
+      node_chain = NodeList.new
+      args_current = []
 
       args.each do |arg|
         if arg =~ /^-/ then
-          node_current.args << arg
+          args_current << arg
         elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
-          node_current.user = $1
-          node_current.host = $3
-          node_current.port = $4 || 22
+          node_new = NodeEntry.new(
+            user: $1,
+            host: $3,
+            port: $4 || 22,
+            args: args_current
+          )
+          node_chain << node_new
 
-          node_current.append Node.new
-          node_current = node_current.next
-
-          if first then
-          else
-            STDERR.puts "ERROR: Unexpected argument #{arg}"
-            exit 1
-          end
+        else
+          STDERR.puts "ERROR: Unexpected argument #{arg}"
+          exit 1
         end
-        return node_chain
       end
-    end #class
-  end #module
-end
+      return node_chain
+    end
+  end #class
+end #module
 

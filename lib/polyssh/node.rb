@@ -1,50 +1,41 @@
 # vim: set ts=2 sw=2 et:
 
 module PolySSH
-	class Node
-		attr_reader :port
-		attr_reader :user
-		attr_reader :host
+  class NodeList
+    def initialize
+      @head = nil
+      @tail = nil
+    end
 
-		attr_reader :next
-		attr_reader :prev
+    def <<(node)
+      if @head.nil? then
+        @head = node
+        @tail = node
+      else
+        @tail.next = node
+        @tail = node
+      end
+      self
+    end
+  end
+
+	class NodeEntry
+		attr_accessor :port
+		attr_accessor :user
+		attr_accessor :host
+
+		attr_accessor :next
 		attr_accessor :args
 
-		def initialize
-			@user = nil
-			@host = nil
-			@port = nil
-			@args = []
+		def initialize(user: nil, host:, port:, args: nil)
+			@user = user
+			@host = host
+			@port = port
+			@args = args
+
+      # Linked list part
 			@next = nil
-			@prev = nil
 		end
-
-		def append node
-			node.prev = self
-			self.next = node
-		end
-
-		def to_s
-			if @prev.nil? then # first
-				if @next.nil? then
-					[
-					  "ssh #{@user}#{@host}",
-			      "-p #{@port}",
-			      "-o UserKnownHostsFile=/dev/null",
-			      "-o StrictHostKeyChecking=no"
-			    ]
-				else
-					[
-					  "ssh #{@user}#{@host}",
-			      "-p #{@port}",
-			      "-o UserKnownHostsFile=/dev/null",
-			      "-o StrictHostKeyChecking=no",
-	          "-L #{@tunnel_port}:#{host}:#{port}"
-			    ]
-					#result << "#{ssh_cmd} -f sleep 10 #{ssh_args}"
-				end
-			end
-		end #def
 	end #class
 end #module
 
