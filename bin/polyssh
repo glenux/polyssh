@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+# vim: set ts=2 sw=2 et:
+
+module PolySSH
+  class CLI
+    def initialize
+      @tunnel_port = 13021
+    end
+
+    def build_commands args
+      ssh_cmd = ""
+      ssh_args = ""
+      result = []
+      current_node = Node.new
+
+      args.each do |arg|
+        if arg =~ /^-/ then
+          current_node = 
+            ssh_args += " #{arg}" 
+        elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
+          current_node.user = $1
+          current_node.host = $3
+          current_node.port = $4 || 22
+
+          if first then
+
+          else 
+            ssh_cmd = "ssh #{user}localhost -p #{@tunnel_port} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+            ssh_args = ''
+            @tunnel_port += 1
+          end
+        else
+          STDERR.puts "ERROR: Unexpected argument #{arg}"
+          exit 1
+        end
+      end
+      result << "#{ssh_cmd} #{ssh_args}";
+      return result
+    end
+
+    def exec commands
+      commands.each do |cmd|
+        puts cmd
+        system(cmd);
+      end
+    end
+  end #class
+end #module
+
+app = PolySSH::Cli.new
+commands = app.build_commands ARGV
+app.exec commands
