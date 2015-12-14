@@ -1,6 +1,10 @@
 PolySSH
 =======
 
+[![Travis-CI](https://api.travis-ci.org/glenux/polyssh.png?branch=master)](https://travis-ci.org/glenux/polyssh)
+[![Code Climate](https://codeclimate.com/github/glenux/polyssh/badges/gpa.svg)](https://codeclimate.com/github/glenux/polyssh)
+
+
 A multi-hop SSH connection tool.
 
 ## Installation
