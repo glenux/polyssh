@@ -1,10 +1,22 @@
 
 module PolySSH
   class Cli
-    def build_commands args
-      node_chain = NodeList.new
-      args_current = []
+    attr_reader :chain
 
+    def self.start args
+      app = self.new
+      app.parse_cmdline ARGV
+      pp app.chain
+      #app.run commands
+
+    end
+
+    def initialize
+      @chain = NodeList.new
+    end
+
+    def parse_cmdline args
+      args_current = []
       args.each do |arg|
         if arg =~ /^-/ then
           args_current << arg
@@ -15,14 +27,14 @@ module PolySSH
             port: $4 || 22,
             args: args_current
           )
-          node_chain << node_new
+          @chain << node_new
 
         else
           STDERR.puts "ERROR: Unexpected argument #{arg}"
           exit 1
         end
       end
-      return node_chain
+      return @chain
     end
   end #class
 end #module

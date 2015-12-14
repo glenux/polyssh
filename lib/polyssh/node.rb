@@ -27,11 +27,11 @@ module PolySSH
 		attr_accessor :next
 		attr_accessor :args
 
-		def initialize(user: nil, host:, port:, args: nil)
+		def initialize(user:, host:, port: nil, args: nil)
 			@user = user
 			@host = host
-			@port = port
-			@args = args
+			@port = port || 22
+			@args = args || []
 
       # Linked list part
 			@next = nil
