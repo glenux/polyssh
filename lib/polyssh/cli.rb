@@ -5,7 +5,7 @@ module PolySSH
 
     def self.start args
       app = self.new
-      app.parse_cmdline ARGV
+      app.parse_cmdline args
       pp app.chain
       #app.run commands
 
