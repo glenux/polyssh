@@ -2,6 +2,17 @@
 
 module PolySSH
   class NodeList
+	  include Visitable
+    include Enumerable
+
+    def each 
+      ptr = @head 
+      while not ptr.nil? do
+        yield ptr 
+        ptr = ptr.next
+      end
+    end
+
     def initialize
       @head = nil
       @tail = nil
@@ -20,6 +31,8 @@ module PolySSH
   end
 
 	class NodeEntry
+	  include Visitable
+
 		attr_accessor :port
 		attr_accessor :user
 		attr_accessor :host

@@ -6,7 +6,9 @@ module PolySSH
     def self.start args
       app = self.new
       app.parse_cmdline args
-      pp app.chain
+
+      app.build_commands app.chain
+
       #app.run commands
 
     end
@@ -22,7 +24,7 @@ module PolySSH
           args_current << arg
         elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
           node_new = NodeEntry.new(
-            user: $1,
+            user: $2,
             host: $3,
             port: $4 || 22,
             args: args_current
@@ -35,6 +37,12 @@ module PolySSH
         end
       end
       return @chain
+    end
+
+
+    def build_commands chain
+      commands = chain.accept(CommandBuilder.new)
+      return commands
     end
   end #class
 end #module
