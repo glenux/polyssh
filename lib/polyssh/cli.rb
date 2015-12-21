@@ -1,4 +1,7 @@
 
+require 'net/ssh'
+require 'net/scp'
+
 module PolySSH
   class Cli
     attr_reader :chain
@@ -23,6 +26,8 @@ module PolySSH
         if arg =~ /^-/ then
           args_current << arg
         elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
+          ssh_options = Net::SSH::Config.for($3)
+          pp ssh_options
           node_new = NodeEntry.new(
             user: $2,
             host: $3,
@@ -30,6 +35,7 @@ module PolySSH
             args: args_current
           )
           @chain << node_new
+          args_current = []
 
         else
           STDERR.puts "ERROR: Unexpected argument #{arg}"
