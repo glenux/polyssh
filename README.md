@@ -45,7 +45,7 @@ Type the following command using polyssh :
 
 ## Credits
 
-* Initial idea : [Bob Muller on Stack Overflow](http://superuser.com/a/377215)
+* Initial idea & implementation : [Bob Muller on Stack Overflow](http://superuser.com/a/377215)
 * Ruby rewrite & packaging : Glenn Y. Rolland
 
 ## Contributing
