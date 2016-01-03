@@ -4,15 +4,15 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'polyssh/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "polyssh"
+  spec.name          = 'polyssh'
   spec.version       = PolySSH::VERSION
   spec.authors       = ["Glenn Y. Rolland"]
-  spec.email         = ["glenn.rolland@netcat.io"]
+  spec.email         = ['glenux@glenux.net']
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
-  spec.license       = "MIT"
+  spec.summary       = %q{Multi-hop SSH tunneling tool.}
+  spec.description   = %q{Multi-hop SSH tunneling tool.}
+  spec.homepage      = 'https://github.com/glenux/polyssh'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "bin"
