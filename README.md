@@ -36,11 +36,11 @@ We want to connect
 
 * to a remote host called ``destination`` (as user ``charlie``, on default port)
 * via a firewall (as user ``alice``, on non-default port 7222)
-* then via a router  (as user ``bob``, on default), with parameters (FIXME)
+* then via a router  (as user ``bob``, on default), with verbosity)
 
 Type the following command using polyssh :
 
-    $ polyssh alice@firewall:7222 -verbose Cypherbob@router charlie@destination
+    $ polyssh alice@firewall:7222 -verbose bob@router charlie@destination
 
 
 ## Credits
