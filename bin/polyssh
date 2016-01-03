@@ -2,7 +2,7 @@
 # vim: set ts=2 sw=2 et:
 
 require 'polyssh'
-require 'pp'
+# require 'pp'
 
 PolySSH::Cli.start(ARGV)
 

@@ -26,8 +26,8 @@ module PolySSH
         if arg =~ /^-/ then
           args_current << arg
         elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
-          ssh_options = Net::SSH::Config.for($3)
-          pp ssh_options
+          # ssh_options = Net::SSH::Config.for($3)
+          # pp ssh_options
           node_new = NodeEntry.new(
             user: $2,
             host: $3,
