@@ -1,6 +1,7 @@
 
 require 'net/ssh'
 require 'net/scp'
+require 'optparse'
 
 module PolySSH
   class Cli
@@ -18,16 +19,31 @@ module PolySSH
 
     def initialize
       @chain = NodeList.new
+      @options = {}
     end
 
     def parse_cmdline args
+      _parse_cmdline_options args
+      _parse_cmdline_hops args
+
+    end
+
+
+    def build_commands chain
+      commands = chain.accept(CommandBuilder.new)
+      return commands
+    end
+
+    private 
+
+    def _parse_cmdline_hops args
+      puts args
       args_current = []
       args.each do |arg|
-        if arg =~ /^-/ then
+        case arg
+        when /^-/
           args_current << arg
-        elsif arg =~ /^((.+)@)?([^:]+):?(\d+)?$/ then
-          # ssh_options = Net::SSH::Config.for($3)
-          # pp ssh_options
+        when /^((.+)@)?([^:]+):?(\d+)?$/
           node_new = NodeEntry.new(
             user: $2,
             host: $3,
@@ -36,7 +52,6 @@ module PolySSH
           )
           @chain << node_new
           args_current = []
-
         else
           STDERR.puts "ERROR: Unexpected argument #{arg}"
           exit 1
@@ -45,10 +60,25 @@ module PolySSH
       return @chain
     end
 
+    def _parse_cmdline_options args
+      OptionParser.new do |opts|
+        opts.banner = "Usage: example.rb [options]"
 
-    def build_commands chain
-      commands = chain.accept(CommandBuilder.new)
-      return commands
+        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+          @options[:verbose] = v
+        end
+        opts.on("-h", "--help", "Prints this help") do
+          puts opts
+          exit
+        end
+
+        opts.on("--", "--", "Close #{$0} options (other options will pass to ssh)") do |v|
+          raise FinalOption
+        end
+      end.parse! args
+    rescue FinalOption
+    ensure
+      return nil
     end
   end #class
 end #module
