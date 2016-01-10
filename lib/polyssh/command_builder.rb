@@ -14,19 +14,22 @@ module PolySSH
         if node_list.count > 0 then
           node_list.first.accept(self)
         end
-        @commands.each do |cmd|
-          puts cmd
-          fork { exec cmd + " >/dev/null 2>&1 " }
-          sleep 2
-        end
-        puts @last_command 
-        system @last_command
     end
 
     # Visit each node entry
     def visit_polyssh_nodeentry node_entry
       cmd=""
-      if node_entry.next.nil? then
+      if @commands.empty? and node_entry.next.nil? then
+        cmd = ("ssh " +
+               "-o ForwardAgent=yes " +
+               "-o UserKnownHostsFile=/dev/null " +
+               "-o StrictHostKeyChecking=no " +
+               "-p #{node_entry.port} " +
+               "-l #{node_entry.user} " +
+               "#{node_entry.host} " 
+              )
+        @commands << [@baseport, cmd]
+      elsif node_entry.next.nil? then
         cmd = ("ssh " +
                "-o ForwardAgent=yes " +
                "-o UserKnownHostsFile=/dev/null " +
@@ -35,7 +38,7 @@ module PolySSH
                "-l #{node_entry.user} " +
                "localhost " 
               )
-        @last_command = cmd
+        @commands << [@baseport, cmd]
       else
         get_port
         next_entry = node_entry.next 
@@ -48,7 +51,7 @@ module PolySSH
           "-L#{@baseport}:#{next_entry.host}:#{next_entry.port} " +
           "-l #{node_entry.user} #{node_entry.host} "
         )
-        @commands << cmd
+        @commands << [@baseport, cmd]
         next_entry.accept(self)
       end
     end

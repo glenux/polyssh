@@ -2,42 +2,52 @@
 require 'net/ssh'
 require 'net/scp'
 require 'optparse'
+require 'colorize'
 
 module PolySSH
   class Cli
-    attr_reader :chain
+    attr_reader :chain, :commands
 
     def self.start args
       app = self.new
       app.parse_cmdline args
 
+      puts "Building SSH hops...".yellow
       app.build_commands app.chain
+      #app.commands.each{|x| puts x }
 
-      #app.run commands
-
+      puts "Running SSH hops...".yellow
+      app.run_commands app.commands
     end
 
     def initialize
       @chain = NodeList.new
+      @commands = []
       @options = {}
     end
 
     def parse_cmdline args
       _parse_cmdline_options args
       _parse_cmdline_hops args
-
     end
 
+    def run_commands commands
+      @commands[0..-2].each do |baseport,cmd|
+        fork { exec cmd + " >/dev/null 2>&1 " }
+        _wait_active_port baseport
+      end
+      baseport, cmd = @commands.last
+      system cmd
+    end
 
     def build_commands chain
-      commands = chain.accept(CommandBuilder.new)
-      return commands
+      @commands = chain.accept(CommandBuilder.new)
+      return @commands
     end
 
     private 
 
     def _parse_cmdline_hops args
-      puts args
       args_current = []
       args.each do |arg|
         case arg
@@ -60,6 +70,12 @@ module PolySSH
       return @chain
     end
 
+    def _wait_active_port port
+      while !system("nc -w0 localhost #{port}") do
+        sleep 1
+      end
+    end
+
     def _parse_cmdline_options args
       OptionParser.new do |opts|
         opts.banner = "Usage: example.rb [options]"
@@ -77,6 +93,7 @@ module PolySSH
         end
       end.parse! args
     rescue FinalOption
+      # nothing 
     ensure
       return nil
     end
