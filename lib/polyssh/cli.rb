@@ -36,7 +36,7 @@ module PolySSH
         fork { exec cmd + " >/dev/null 2>&1 " }
         _wait_active_port baseport
       end
-      baseport, cmd = @commands.last
+      _baseport, cmd = @commands.last
       system cmd
     end
 
