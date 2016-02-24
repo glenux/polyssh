@@ -6,42 +6,69 @@ require 'colorize'
 
 module PolySSH
   class Cli
-    attr_reader :chain, :commands
+    ACTION_NONE = :none
+    ACTION_HELP = :help
+    ACTION_HOP = :hop
 
     def self.start args
-      app = self.new
-      app.parse_cmdline args
+      app = self.new 
+      app.run args
+    end
 
-      puts "Building SSH hops...".yellow
-      app.build_commands app.chain
-      #app.commands.each{|x| puts x }
+    def run args
+      parse_cmdline args
 
-      puts "Running SSH hops...".yellow
-      app.run_commands app.commands
+      case @action 
+      when ACTION_HELP
+        puts @usage
+        exit 0
+      when ACTION_HOP then
+        puts "Building SSH hops...".yellow
+        build_commands
+        #app.commands.each{|x| puts x }
+
+        puts "Running SSH hops...".yellow
+        run_commands
+      when ACTION_NONE
+        puts @usage
+        puts "ERROR: no hop defined!"
+        exit 1
+      else
+        puts @usage
+        puts "ERROR: internal error!"
+        exit 1
+      end
     end
 
     def initialize
       @chain = NodeList.new
+      @action = ACTION_HOP
       @commands = []
       @options = {}
+      @usage = nil
     end
 
     def parse_cmdline args
       _parse_cmdline_options args
       _parse_cmdline_hops args
+
+      if @chain.empty? then
+        @action = ACTION_NONE
+      end
+      
     end
 
-    def run_commands commands
+    def run_commands
       @commands[0..-2].each do |baseport,cmd|
-        fork { exec cmd + " >/dev/null 2>&1 " }
+        fork { exec cmd + ' >/dev/null 2>&1 ' }
         _wait_active_port baseport
       end
       _baseport, cmd = @commands.last
       system cmd
     end
 
-    def build_commands chain
-      @commands = chain.accept(CommandBuilder.new)
+    def build_commands
+      @commands = @chain.accept(CommandBuilder.new)
       return @commands
     end
 
@@ -71,27 +98,30 @@ module PolySSH
     end
 
     def _wait_active_port port
-      while !system("nc -w0 localhost #{port}") do
-        sleep 1
+      cmd = ">/dev/null 2>&1 nc -z -q1 -w1 localhost #{port} "
+      while !system(cmd) do
+        #puts cmd
+        sleep 0.2
       end
     end
 
     def _parse_cmdline_options args
-      OptionParser.new do |opts|
-        opts.banner = "Usage: example.rb [options]"
+      @usage = OptionParser.new do |opts|
+        opts.banner = "Usage: #{$0} [options]"
 
-        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+        opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
           @options[:verbose] = v
         end
-        opts.on("-h", "--help", "Prints this help") do
-          puts opts
-          exit
+        opts.on('-h', '--help', 'Prints this help') do
+          @action = ACTION_HELP
         end
 
-        opts.on("--", "--", "Close #{$0} options (other options will pass to ssh)") do |v|
+        opts.on('--', '--', "Close #{$0} options (other options will pass to ssh)") do |v|
           raise FinalOption
         end
-      end.parse! args
+      end
+      @usage.parse! args
+      
     rescue FinalOption
       # nothing 
     ensure

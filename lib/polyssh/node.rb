@@ -28,6 +28,10 @@ module PolySSH
       end
       self
     end
+
+    def empty? 
+      (@head == nil && @tail = nil)
+    end
   end
 
 	class NodeEntry
