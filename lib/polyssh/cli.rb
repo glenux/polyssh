@@ -98,7 +98,7 @@ module PolySSH
     end
 
     def _wait_active_port port
-      cmd = ">/dev/null 2>&1 nc -z -q1 -w1 localhost #{port} "
+      cmd = ">/dev/null 2>&1 nc -z -q1 -w1 localhost #{port}"
       while !system(cmd) do
         #puts cmd
         sleep 0.2
