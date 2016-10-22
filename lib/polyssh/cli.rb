@@ -71,7 +71,7 @@ module PolySSH
     end
 
     def _wait_active_port port
-      while !system("nc -w0 localhost #{port}") do
+      while !system("nc -w1 localhost #{port}") do
         sleep 1
       end
     end
